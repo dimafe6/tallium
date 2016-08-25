@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="abstract.database.service" class="TicketBundle\Service\AbstractDatabaseService" abstract="true">
+            <argument type="service" id="doctrine_mongodb"/>
+        </service>
+
+        <service id="ticket.service" class="TicketBundle\Service\TicketService" parent="abstract.database.service"/>
+
+        <service id="reservation.service" class="TicketBundle\Service\ReservationService" parent="abstract.database.service"/>
+
+
+        <service id="ticket.rpc.service" class="TicketBundle\Service\TicketRPCService" parent="abstract.database.service">
+            <argument type="service" id="ticket.service"/>
+            <argument type="service" id="reservation.service"/>
+        </service>
+
+        <service id="ticket.handler.service" class="TicketBundle\Handler\HandlerService" parent="abstract.database.service"/>
+
+        <service id="kernel.listener.clank.client_event" class="TicketBundle\EventListener\EventListener"
+                 parent="abstract.database.service">
+            <argument type="service" id="reservation.service"/>
+            <tag name="kernel.event_listener" event="clank.client.connected" method="onClientConnect"/>
+            <tag name="kernel.event_listener" event="clank.client.disconnected" method="onClientDisconnect"/>
+            <tag name="kernel.event_listener" event="clank.client.error" method="onClientError"/>
+        </service>
+
+    </services>
+
+</container>
