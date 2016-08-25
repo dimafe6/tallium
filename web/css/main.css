@@ -1,0 +1,35 @@
+.table-inner {
+    margin-bottom: 0;
+}
+
+.table-inner .place {
+    cursor: pointer;
+}
+
+.table-inner .place:not(.booked):hover {
+    background-color: green;
+}
+
+.table-inner .header {
+    color: #999999;
+}
+
+.table-inner td.booked {
+    background-color: #999999;
+    color: #999999;
+}
+
+.table-inner td.booked:hover {
+    cursor: default !important;
+    background-color: #999999;
+}
+
+.table-inner td.reservation {
+    background-color: cornsilk;
+}
+.table-inner td.reservation:hover {
+    background-color: cornsilk;
+}
+.table-inner td.reservation-my {
+    background-color: green;
+}

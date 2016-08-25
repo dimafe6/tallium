@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset("css/bootstrap.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("css/main.css") }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        var _CLANK_URI = "ws://{{ clank_host }}:{{ clank_port }}";
+    </script>
+    {{ clank_client() }}
+    <script src="{{ asset("js/jquery-1.12.4.min.js") }}"></script>
+    <script src="{{ asset("js/bootstrap.min.js") }}"></script>
+    <script src="{{ asset("js/bootstrap-notify.js") }}"></script>
+    <script src="{{ asset("js/main.js") }}"></script>
+
+{% endblock %}
+
+{% block body %}
+
+    <div class="container-fluid">
+        <div class="col-md-10">
+            <table id="ticket-table" class="table-bordered table table-responsive text-center">
+                <thead>
+                <tr>
+                    {% for sector in sectors %}
+                        <th class="sector-{{ sector }}">
+                            <span class="text-left">
+                                Сектор {{ sector }}
+                                <span style="font-size: small; color: #999;float: right"> Свободно:
+                                    <span class="sector-free-places">{{ freeTicketsForSector[sector] }}</span>
+                                </span>
+                            </span>
+                        </th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    {% for sector in sectors %}
+                        <td>
+                            <table class="table-bordered table table-responsive text-center table-inner">
+                                {% for series in series %}
+                                    <tr>
+                                        <td class="header">Ряд {{ series }}</td>
+                                        {% for ticket in tickets if ticket.series == series and ticket.sector == sector %}
+                                            <td class="place
+                                            {% if ticket.booked %} booked {% endif %}
+                                            {% if ticket.reservation %} reservation {% endif %}"
+                                                data-id="{{ ticket.id }}"
+                                                data-sector="{{ ticket.sector }}"
+                                                data-series="{{ ticket.series }}"
+                                            >{{ ticket.place }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </td>
+                    {% endfor %}
+                </tr>
+                </tbody>
+            </table>
+            <div class="statistics">
+                <div>Всего мест: <span class="total-places">{{ tickets|length }}</span></div>
+                <div>Свободных мест: <span class="total-free-places">{{ freeTickets }}</span></div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <h4 class="text-center">Корзина</h4>
+            <table id="cart" class="table-bordered table table-responsive text-center">
+                <thead>
+                <tr>
+                    <th>Сектор</th>
+                    <th>Ряд</th>
+                    <th>Место</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr style="display: none" class="cart-template">
+                    <td class="sector"></td>
+                    <td class="series"></td>
+                    <td class="place"></td>
+                </tr>
+                </tbody>
+            </table>
+            <button id="by-btn" class="btn btn-success">Купить билеты</button>
+        </div>
+    </div>
+
+{% endblock %}
